@@ -1,9 +1,5 @@
 import uvicorn
-from weather import mcp
-from routes import create_app
-
-# 创建 FastAPI 应用
-app = create_app(mcp)
+from app import app
 
 
 def run():
