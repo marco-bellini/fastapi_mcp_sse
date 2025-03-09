@@ -18,7 +18,20 @@ sse = SseServerTransport("/messages/")
 app.router.routes.append(Mount("/messages", app=sse.handle_post_message))
 
 
-@app.get("/sse")
+# Add documentation for the /messages endpoint
+@app.get("/messages", tags=["MCP"], include_in_schema=True)
+def messages_docs():
+    """
+    Messages endpoint for SSE communication
+
+    This endpoint is used for posting messages to SSE clients.
+    Note: This route is for documentation purposes only.
+    The actual implementation is handled by the SSE transport.
+    """
+    pass  # This is just for documentation, the actual handler is mounted above
+
+
+@app.get("/sse", tags=["MCP"])
 async def handle_sse(request: Request):
     """
     SSE endpoint that connects to the MCP server

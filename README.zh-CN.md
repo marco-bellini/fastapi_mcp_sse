@@ -34,7 +34,7 @@
 本项目展示了一个模块化架构，包括：
 
 1. 将 MCP SSE 端点（`/sse` 和 `/messages/`）集成到 FastAPI 应用中
-2. 提供标准 Web 路由（`/`、`/about`、`/status`、`/docs`）
+2. 提供标准 Web 路由（`/`、`/about`、`/status`、`/docs`, `/redoc`）
 3. 展示如何保持 MCP 功能与 Web 路由的分离
 
 ## 安装与使用选项
@@ -104,7 +104,8 @@ uv run start
   - 主页：http://localhost:8000/
   - 关于页面：http://localhost:8000/about
   - 状态 API：http://localhost:8000/status
-  - 文档：http://localhost:8000/docs
+  - 文档 (Swagger UI)：http://localhost:8000/docs
+  - 文档 (ReDoc): http://localhost:8000/redoc
 - MCP SSE 端点：
   - SSE 端点：http://localhost:8000/sse
   - 消息发布：http://localhost:8000/messages/

@@ -34,7 +34,7 @@ This project demonstrates how to implement Server-Sent Events (SSE) using the Fa
 This project showcases a modular architecture that:
 
 1. Integrates MCP SSE endpoints (`/sse` and `/messages/`) into a FastAPI application
-2. Provides standard web routes (`/`, `/about`, `/status`, `/docs`)
+2. Provides standard web routes (`/`, `/about`, `/status`, `/docs`, `/redoc`)
 3. Demonstrates how to maintain separation between MCP functionality and web routes
 
 ## Installation & Usage Options
@@ -104,7 +104,8 @@ After starting the server (using either Option 1 or Option 2), the following end
   - Home page: http://localhost:8000/
   - About page: http://localhost:8000/about
   - Status API: http://localhost:8000/status
-  - Documentation: http://localhost:8000/docs
+  - Documentation (Swagger UI): http://localhost:8000/docs
+  - Documentation (ReDoc): http://localhost:8000/redoc
 - MCP SSE endpoints:
   - SSE endpoint: http://localhost:8000/sse
   - Message posting: http://localhost:8000/messages/
