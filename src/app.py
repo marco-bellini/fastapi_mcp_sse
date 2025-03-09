@@ -3,23 +3,42 @@ from mcp.server.sse import SseServerTransport
 from starlette.routing import Mount
 from weather import mcp
 
-# 创建 FastAPI 应用
-app = FastAPI()
-# 创建 SSE 传输实例
+# Create FastAPI application with metadata
+app = FastAPI(
+    title="FastAPI MCP SSE",
+    description="A demonstration of Server-Sent Events with Model Context "
+    "Protocol integration",
+    version="0.1.0",
+)
+
+# Create SSE transport instance for handling server-sent events
 sse = SseServerTransport("/messages/")
-# 挂载 /messages 路径给 sse.handle_post_message 处理
+
+# Mount the /messages path to handle SSE message posting
 app.router.routes.append(Mount("/messages", app=sse.handle_post_message))
 
 
 @app.get("/sse")
 async def handle_sse(request: Request):
-    # 直接使用 sse.connect_sse 连接 MCP 服务器
+    """
+    SSE endpoint that connects to the MCP server
+
+    This endpoint establishes a Server-Sent Events connection with the client
+    and forwards communication to the Model Context Protocol server.
+    """
+    # Use sse.connect_sse to establish an SSE connection with the MCP server
     async with sse.connect_sse(request.scope, request.receive, request._send) as (
         read_stream,
         write_stream,
     ):
+        # Run the MCP server with the established streams
         await mcp._mcp_server.run(
             read_stream,
             write_stream,
             mcp._mcp_server.create_initialization_options(),
         )
+
+
+# Import routes at the end to avoid circular imports
+# This ensures all routes are registered to the app
+import routes  # noqa

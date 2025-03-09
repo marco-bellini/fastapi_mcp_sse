@@ -139,11 +139,17 @@ mcp dev ./src/weather.py
 
 ### 添加自定义路由
 
-应用结构便于添加新路由：
+应用结构便于使用 FastAPI 的 APIRouter 添加新路由：
 
-1. 在 routes.py 中定义新的路由处理程序
-2. 将路由添加到 routes.py 中的路由列表
-3. 主应用将自动包含这些路由
+1. 在 routes.py 中使用 APIRouter 定义新的路由处理程序：
+
+   ```python
+   @router.get("/new-route")
+   async def new_route():
+       return {"message": "这是一个新路由"}
+   ```
+
+2. 使用 router 定义的所有路由将自动包含到主应用中
 
 ### 自定义 MCP 集成
 

@@ -139,11 +139,17 @@ mcp dev ./src/weather.py
 
 ### Adding Custom Routes
 
-The application structure makes it easy to add new routes:
+The application structure makes it easy to add new routes using FastAPI's APIRouter:
 
-1. Define new route handlers in routes.py
-2. Add routes to the routes list in routes.py
-3. The main application will automatically include these routes
+1. Define new route handlers in routes.py using the APIRouter:
+
+   ```python
+   @router.get("/new-route")
+   async def new_route():
+       return {"message": "This is a new route"}
+   ```
+
+2. All routes defined with the router will be automatically included in the main application
 
 ### Customizing MCP Integration
 

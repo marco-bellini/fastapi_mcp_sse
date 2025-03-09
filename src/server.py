@@ -1,10 +1,15 @@
 import uvicorn
+import os
 from app import app
+
+# Environment variable configuration
+HOST = os.getenv("HOST", "0.0.0.0")
+PORT = int(os.getenv("PORT", "8000"))
 
 
 def run():
-    """启动 FastAPI 服务器"""
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    """Start the FastAPI server with uvicorn"""
+    uvicorn.run(app, host=HOST, port=PORT, log_level="info")
 
 
 if __name__ == "__main__":
