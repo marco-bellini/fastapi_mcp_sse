@@ -1,16 +1,13 @@
 import uvicorn
-from starlette.applications import Starlette
-from routes import routes
+from weather import mcp
+from routes import create_app
 
-# Create Starlette application
-app = Starlette(
-    debug=True,
-    routes=routes,
-)
+# 创建 FastAPI 应用
+app = create_app(mcp)
 
 
 def run():
-    """Start the Starlette server"""
+    """启动 FastAPI 服务器"""
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
