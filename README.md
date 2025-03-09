@@ -1,10 +1,10 @@
-# Starlette MCP SSE
+# FastAPI MCP SSE
 
 <p align="center">
   <strong>English</strong> | <a href="/README.zh-CN.md">简体中文</a>
 </p>
 
-A Server-Sent Events (SSE) implementation using Starlette framework with [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) integration.
+A Server-Sent Events (SSE) implementation using FastAPI framework with [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) integration.
 
 ## What is MCP?
 
@@ -15,16 +15,16 @@ The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) is an open 
 - **Interoperability**: Creates a common interface between different AI models and tools
 - **Extensibility**: Makes it easy to add new capabilities to AI systems without retraining
 
-This project demonstrates how to implement MCP using Server-Sent Events (SSE) in a Starlette web application.
+This project demonstrates how to implement MCP using Server-Sent Events (SSE) in a FastAPI web application.
 
 ## Description
 
-This project demonstrates how to implement Server-Sent Events (SSE) using the Starlette framework while integrating Model Context Protocol (MCP) functionality. The key feature is the seamless integration of MCP's SSE capabilities within a full-featured Starlette web application that includes custom routes.
+This project demonstrates how to implement Server-Sent Events (SSE) using the FastAPI framework while integrating Model Context Protocol (MCP) functionality. The key feature is the seamless integration of MCP's SSE capabilities within a full-featured FastAPI web application that includes custom routes.
 
 ## Features
 
 - Server-Sent Events (SSE) implementation with MCP
-- Starlette framework integration with custom routes
+- FastAPI framework integration with custom routes
 - Unified web application with both MCP and standard web endpoints
 - Customizable route structure
 - Clean separation of concerns between MCP and web functionality
@@ -33,7 +33,7 @@ This project demonstrates how to implement Server-Sent Events (SSE) using the St
 
 This project showcases a modular architecture that:
 
-1. Integrates MCP SSE endpoints (`/sse` and `/messages/`) into a Starlette application
+1. Integrates MCP SSE endpoints (`/sse` and `/messages/`) into a FastAPI application
 2. Provides standard web routes (`/`, `/about`, `/status`, `/docs`)
 3. Demonstrates how to maintain separation between MCP functionality and web routes
 
@@ -52,7 +52,7 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 Run the application directly without cloning the repository using UV's execution tool:
 
 ```cmd
-uvx --from git+https://github.com/panz2018/starlette_mcp_sse.git start
+uvx --from git+https://github.com/panz2018/fastapi_mcp_sse.git start
 ```
 
 ### Option 2: Full Installation
@@ -83,7 +83,7 @@ uv pip install -r pyproject.toml
 
 #### Start the Integrated Server
 
-Launch the integrated Starlette server with MCP SSE functionality:
+Launch the integrated FastAPI server with MCP SSE functionality:
 
 ```cmd
 python src/server.py
@@ -151,7 +151,7 @@ The MCP SSE functionality is integrated in server.py through:
 
 - Creating an SSE transport
 - Setting up an SSE handler
-- Adding MCP routes to the Starlette application
+- Adding MCP routes to the FastAPI application
 
 ## Integration with [Continue](https://www.continue.dev/)
 

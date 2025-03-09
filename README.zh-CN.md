@@ -1,10 +1,10 @@
-# Starlette MCP SSE
+# FastAPI MCP SSE
 
 <p align="center">
   <a href="/README.md">English</a> | <strong>简体中文</strong>
 </p>
 
-这是一个使用 Starlette 框架实现的服务器推送事件（SSE）项目，集成了 [模型上下文协议 (MCP)](https://modelcontextprotocol.io/)。
+这是一个使用 FastAPI 框架实现的服务器推送事件（SSE）项目，集成了 [模型上下文协议 (MCP)](https://modelcontextprotocol.io/)。
 
 ## 什么是 MCP？
 
@@ -15,16 +15,16 @@
 - **互操作性**：在不同 AI 模型和工具之间创建通用接口
 - **可扩展性**：便于在无需重新训练的情况下为 AI 系统添加新功能
 
-本项目展示了如何在 Starlette Web 应用中使用服务器推送事件 (SSE) 实现 MCP。
+本项目展示了如何在 FastAPI Web 应用中使用服务器推送事件 (SSE) 实现 MCP。
 
 ## 描述
 
-本项目展示了如何使用 Starlette 框架实现服务器推送事件 (SSE)，同时集成模型上下文协议 (MCP) 功能。其核心特点是将 MCP 的 SSE 功能无缝集成到一个包含自定义路由的完整 Starlette Web 应用中。
+本项目展示了如何使用 FastAPI 框架实现服务器推送事件 (SSE)，同时集成模型上下文协议 (MCP) 功能。其核心特点是将 MCP 的 SSE 功能无缝集成到一个包含自定义路由的完整 FastAPI Web 应用中。
 
 ## 功能
 
 - 基于 MCP 的服务器推送事件 (SSE) 实现
-- 与 Starlette 框架集成，支持自定义路由
+- 与 FastAPI 框架集成，支持自定义路由
 - 统一 Web 应用，同时支持 MCP 和标准 Web 端点
 - 可自定义的路由结构
 - MCP 功能与 Web 功能的清晰分离
@@ -33,7 +33,7 @@
 
 本项目展示了一个模块化架构，包括：
 
-1. 将 MCP SSE 端点（`/sse` 和 `/messages/`）集成到 Starlette 应用中
+1. 将 MCP SSE 端点（`/sse` 和 `/messages/`）集成到 FastAPI 应用中
 2. 提供标准 Web 路由（`/`、`/about`、`/status`、`/docs`）
 3. 展示如何保持 MCP 功能与 Web 路由的分离
 
@@ -52,7 +52,7 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 使用 UV 的执行工具直接运行应用，无需克隆仓库：
 
 ```cmd
-uvx --from git+https://github.com/panz2018/starlette_mcp_sse.git start
+uvx --from git+https://github.com/panz2018/fastapi_mcp_sse.git start
 ```
 
 ### 选项 2：完整安装
@@ -83,7 +83,7 @@ uv pip install -r pyproject.toml
 
 #### 启动集成服务器
 
-启动集成了 MCP SSE 功能的 Starlette 服务器：
+启动集成了 MCP SSE 功能的 FastAPI 服务器：
 
 ```cmd
 python src/server.py
@@ -151,7 +151,7 @@ MCP SSE 功能通过以下方式在 server.py 中集成：
 
 - 创建 SSE 传输
 - 设置 SSE 处理程序
-- 将 MCP 路由添加到 Starlette 应用
+- 将 MCP 路由添加到 FastAPI 应用
 
 ## 与 [Continue](https://www.continue.dev/) 集成
 
