@@ -4,6 +4,7 @@ import httpx
 from mcp.server.fastmcp import FastMCP
 from fastapi import HTTPException, status # Import for raising HTTP exceptions
 import logging # Import logging
+from src.weather_support import make_nws_request, format_alert
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO)
@@ -17,45 +18,45 @@ mcp = FastMCP("weather")
 NWS_API_BASE = "https://api.weather.gov"
 USER_AGENT = "weather-app/1.0" # Use a more descriptive user agent
 
-# --- Improved API Request Handling ---
-async def make_nws_request(url: str) -> dict[str, Any] | None:
-    """Make a request to the NWS API with proper error handling."""
-    headers = {"User-Agent": USER_AGENT, "Accept": "application/geo+json"}
-    async with httpx.AsyncClient() as client:
-        try:
-            logger.info(f"Making NWS request to: {url}")
-            response = await client.get(url, headers=headers, timeout=30.0)
-            response.raise_for_status() # Raise HTTPStatusError for bad responses (4xx or 5xx)
-            logger.info(f"Successfully fetched data from {url}")
-            return response.json()
-        except httpx.RequestError as exc:
-            # Log specific request errors (e.g., network issues, timeouts)
-            logger.error(f"An error occurred while requesting {exc.request.url!r}: {exc}")
-            return None
-        except httpx.HTTPStatusError as exc:
-            # Log HTTP errors (e.g., 404, 500)
-            logger.error(f"Error response {exc.response.status_code} while requesting {exc.request.url!r}: {exc.response.text}")
-            # Optionally, return more specific information based on status code
-            if exc.response.status_code == 404:
-                return None # Or return {"error": "Not Found"}
-            return None # Default for other HTTP errors
-        except Exception as e:
-            # Catch any other unexpected exceptions
-            logger.error(f"An unexpected error occurred during NWS request: {e}", exc_info=True)
-            return None
+# # --- Improved API Request Handling ---
+# async def make_nws_request(url: str) -> dict[str, Any] | None:
+#     """Make a request to the NWS API with proper error handling."""
+#     headers = {"User-Agent": USER_AGENT, "Accept": "application/geo+json"}
+#     async with httpx.AsyncClient() as client:
+#         try:
+#             logger.info(f"Making NWS request to: {url}")
+#             response = await client.get(url, headers=headers, timeout=30.0)
+#             response.raise_for_status() # Raise HTTPStatusError for bad responses (4xx or 5xx)
+#             logger.info(f"Successfully fetched data from {url}")
+#             return response.json()
+#         except httpx.RequestError as exc:
+#             # Log specific request errors (e.g., network issues, timeouts)
+#             logger.error(f"An error occurred while requesting {exc.request.url!r}: {exc}")
+#             return None
+#         except httpx.HTTPStatusError as exc:
+#             # Log HTTP errors (e.g., 404, 500)
+#             logger.error(f"Error response {exc.response.status_code} while requesting {exc.request.url!r}: {exc.response.text}")
+#             # Optionally, return more specific information based on status code
+#             if exc.response.status_code == 404:
+#                 return None # Or return {"error": "Not Found"}
+#             return None # Default for other HTTP errors
+#         except Exception as e:
+#             # Catch any other unexpected exceptions
+#             logger.error(f"An unexpected error occurred during NWS request: {e}", exc_info=True)
+#             return None
 
 
-# --- Data Formatting ---
-def format_alert(feature: dict) -> str:
-    """Format an alert feature into a readable string."""
-    props = feature.get("properties", {}) # Use .get() for safer access
-    return f"""
-Event: {props.get('event', 'Unknown')}
-Area: {props.get('areaDesc', 'Unknown')}
-Severity: {props.get('severity', 'Unknown')}
-Description: {props.get('description', 'No description available')}
-Instructions: {props.get('instruction', 'No specific instructions provided')}
-"""
+# # --- Data Formatting ---
+# def format_alert(feature: dict) -> str:
+#     """Format an alert feature into a readable string."""
+#     props = feature.get("properties", {}) # Use .get() for safer access
+#     return f"""
+# Event: {props.get('event', 'Unknown')}
+# Area: {props.get('areaDesc', 'Unknown')}
+# Severity: {props.get('severity', 'Unknown')}
+# Description: {props.get('description', 'No description available')}
+# Instructions: {props.get('instruction', 'No specific instructions provided')}
+# """
 
 def format_forecast_period(period: dict) -> str:
     """Formats a single forecast period into a readable string."""

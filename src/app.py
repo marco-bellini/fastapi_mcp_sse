@@ -3,7 +3,9 @@ import logging
 from fastapi import FastAPI, Request
 from mcp.server.sse import SseServerTransport
 from starlette.routing import Mount
-from weather import mcp
+from weather import mcp, get_alerts, get_forecast
+from fastapi import Query
+
 
 
 # Configure logging for this module
@@ -17,6 +19,21 @@ app = FastAPI(
     "Protocol integration",
     version="0.1.0",
 )
+
+# REST endpoint for get_alerts
+@app.get("/get_alerts", tags=["Weather"])
+async def rest_get_alerts(state: str = Query(..., description="Two-letter US state code (e.g. CA, NY)")):
+    """REST endpoint to get weather alerts for a US state."""
+    return await get_alerts(state)
+
+# REST endpoint for get_forecast
+@app.get("/get_forecast", tags=["Weather"])
+async def rest_get_forecast(
+    latitude: float = Query(..., description="Latitude of the location"),
+    longitude: float = Query(..., description="Longitude of the location")
+):
+    """REST endpoint to get weather forecast for a location."""
+    return await get_forecast(latitude, longitude)
 
 # Create SSE transport instance for handling server-sent events
 sse = SseServerTransport("/messages/")
