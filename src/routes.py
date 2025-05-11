@@ -4,7 +4,7 @@ import logging
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from fastapi import APIRouter, Depends, HTTPException, status # Import necessary modules
 # from fastapi.security import OAuth2PasswordRequestForm
-from app import app
+from weather_app import app
 # Authentication removed: auth.py no longer exists
 from datetime import timedelta
 
