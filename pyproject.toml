@@ -5,9 +5,9 @@ description = "A working example to create a FastAPI server with SSE-based MCP s
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "fast-agent-mcp>=0.2.23",
     "fastapi>=0.115.11",
     "httpx>=0.28.1",
-#    "jose>=1.0.0",
     "mcp[cli]>=1.3.0",
     "python-multipart>=0.0.20",
     "unicorn>=2.1.3",

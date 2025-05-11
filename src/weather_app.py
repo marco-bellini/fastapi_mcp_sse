@@ -48,6 +48,49 @@ app = FastAPI(
     version="0.1.0",
 )
 
+
+# Create SSE transport instance for handling server-sent events
+sse = SseServerTransport("/messages/")
+
+# Mount the /messages path to handle SSE message posting
+app.router.routes.append(Mount("/messages", app=sse.handle_post_message))
+
+
+# Add documentation for the /messages endpoint
+@app.get("/messages", tags=["MCP"], include_in_schema=True)
+def messages_docs():
+    """
+    Messages endpoint for SSE communication
+
+    This endpoint is used for posting messages to SSE clients.
+    Note: This route is for documentation purposes only.
+    The actual implementation is handled by the SSE transport.
+    """
+    pass  # This is just for documentation, the actual handler is mounted above
+
+
+@app.get("/sse", tags=["MCP"])
+async def handle_sse(request: Request):
+    """
+    SSE endpoint that connects to the MCP server
+
+    This endpoint establishes a Server-Sent Events connection with the client
+    and forwards communication to the Model Context Protocol server.
+    """
+    # Use sse.connect_sse to establish an SSE connection with the MCP server
+    async with sse.connect_sse(request.scope, request.receive, request._send) as (
+        read_stream,
+        write_stream,
+    ):
+        # Run the MCP server with the established streams
+        await mcp._mcp_server.run(
+            read_stream,
+            write_stream,
+            mcp._mcp_server.create_initialization_options(),
+        )
+        logger.info("SSE connection established with client")
+
+
 # REST endpoint for get_alerts
 @app.get("/get_alerts", tags=["Weather"])
 async def rest_get_alerts(state: str = Query(..., description="Two-letter US state code (e.g. CA, NY)")):
@@ -63,21 +106,21 @@ async def rest_get_forecast(
     """REST endpoint to get weather forecast for a location."""
     return await get_forecast(latitude, longitude)
 
-# Create SSE transport instance for handling server-sent events
-sse = SseServerTransport("/")  # Root path for SSE events since we handle specific paths in routes
+# # Create SSE transport instance for handling server-sent events
+# sse = SseServerTransport("/sse")  # Root path for SSE events since we handle specific paths in routes
 
-# Add CORS middleware to allow SSE connections
-from fastapi.middleware.cors import CORSMiddleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# # Add CORS middleware to allow SSE connections
+# from fastapi.middleware.cors import CORSMiddleware
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],  # In production, replace with specific origins
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
-# Mount the messages path to handle SSE message posting
-app.router.routes.append(Mount("/messages", app=sse.handle_post_message))
+# # Mount the messages path to handle SSE message posting
+# app.router.routes.append(Mount("/messages", app=sse.handle_post_message))
 
 
 
@@ -107,53 +150,53 @@ async def get_logs():
         logger.error(f"Error reading log file: {e}")
         return f"Error accessing logs: {str(e)}"
 
-@app.get("/messages", tags=["MCP"], include_in_schema=True)
-def messages_docs():
-    """
-    Messages endpoint for SSE communication
+# @app.get("/messages", tags=["MCP"], include_in_schema=True)
+# def messages_docs():
+#     """
+#     Messages endpoint for SSE communication
 
-    This endpoint is used for posting messages to SSE clients.
-    Note: This route is for documentation purposes only.
-    The actual implementation is handled by the SSE transport.
-    """
-    pass
+#     This endpoint is used for posting messages to SSE clients.
+#     Note: This route is for documentation purposes only.
+#     The actual implementation is handled by the SSE transport.
+#     """
+#     pass
 
-@app.get("/", tags=["MCP"])
-async def handle_sse(request: Request):
-    """
-    Root SSE endpoint that connects to the MCP server
+# @app.get("/", tags=["MCP"])
+# async def handle_sse(request: Request):
+#     """
+#     Root SSE endpoint that connects to the MCP server
 
-    This endpoint establishes a Server-Sent Events connection with the client
-    and forwards communication to the Model Context Protocol server.
-    """
-    if not request.headers.get("accept") == "text/event-stream":
-        return {"message": "This endpoint requires SSE connection"}
+#     This endpoint establishes a Server-Sent Events connection with the client
+#     and forwards communication to the Model Context Protocol server.
+#     """
+#     if not request.headers.get("accept") == "text/event-stream":
+#         return {"message": "This endpoint requires SSE connection"}
     
-    logger.info("SSE connection request received")
-    try:
-        logger.debug("Setting up SSE connection")
-        async with sse.connect_sse(request.scope, request.receive, request._send) as (
-            read_stream,
-            write_stream,
-        ):
-            logger.info(f"SSE connection established with client")
-            try:
-                await mcp._mcp_server.run(
-                    read_stream,
-                    write_stream,
-                    mcp._mcp_server.create_initialization_options(),
-                )
-                logger.info("MCP server run completed normally")
-            except Exception as e:
-                logger.error(f"Error in MCP server run: {e}", exc_info=True)
-                raise
-            finally:
-                logger.debug("MCP server run block completed")
-    except Exception as e:
-        logger.error(f"Error in SSE connection: {e}", exc_info=True)
-        raise
-    finally:
-        logger.info("SSE connection handler completed")
+#     logger.info("SSE connection request received")
+#     try:
+#         logger.debug("Setting up SSE connection")
+#         async with sse.connect_sse(request.scope, request.receive, request._send) as (
+#             read_stream,
+#             write_stream,
+#         ):
+#             logger.info(f"SSE connection established with client")
+#             try:
+#                 await mcp._mcp_server.run(
+#                     read_stream,
+#                     write_stream,
+#                     mcp._mcp_server.create_initialization_options(),
+#                 )
+#                 logger.info("MCP server run completed normally")
+#             except Exception as e:
+#                 logger.error(f"Error in MCP server run: {e}", exc_info=True)
+#                 raise
+#             finally:
+#                 logger.debug("MCP server run block completed")
+#     except Exception as e:
+#         logger.error(f"Error in SSE connection: {e}", exc_info=True)
+#         raise
+#     finally:
+#         logger.info("SSE connection handler completed")
 
 
 # Import routes at the end to avoid circular imports
