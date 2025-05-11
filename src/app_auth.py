@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request, Depends, HTTPException, status # Import De
 from mcp.server.sse import SseServerTransport
 from starlette.routing import Mount
 from weather import mcp
-from auth import get_current_user # Import the authentication dependency
+# Authentication removed: auth.py no longer exists
 
 # Create FastAPI application with metadata
 app = FastAPI(
@@ -35,51 +35,7 @@ def messages_docs():
     """
     pass
 
-@app.get("/sse", tags=["MCP"], summary="Connect to MCP SSE (Authenticated)")
-async def handle_sse(
-    request: Request,
-    current_user: dict = Depends(get_current_user) # Require authentication to establish SSE connection
-):
-    """
-    SSE endpoint that connects to the MCP server.
-    Requires a valid JWT token in the Authorization header to establish the connection.
-
-    Once connected, the client can interact with the MCP server via SSE.
-    The authenticated user's information is available via the `current_user` dependency
-    and could potentially be passed to the MCP tools if the MCP library supports it.
-    """
-    # If get_current_user doesn't raise an HTTPException, the user is authenticated.
-    # You could add further authorization checks here based on `current_user` if needed
-    # (e.g., checking for a specific role or permission to access the MCP tools).
-    # Example:
-    # if "can_use_weather_tools" not in current_user.get("permissions", []):
-    #      raise HTTPException(
-    #          status_code=status.HTTP_403_FORBIDDEN,
-    #          detail="User not authorized to use weather tools"
-    #      )
-
-    # Use sse.connect_sse to establish an SSE connection with the MCP server
-    # This part proceeds only if authentication and optional authorization succeeded.
-    async with sse.connect_sse(request.scope, request.receive, request._send) as (
-        read_stream,
-        write_stream,
-    ):
-        # Pass the authenticated user information to the MCP server if the MCP library supports it.
-        # This would allow your tools in weather.py to know which user is calling them.
-        # As per the MCP documentation or library capabilities, you might modify
-        # create_initialization_options() or pass extra arguments to mcp._mcp_server.run()
-        # Example (conceptual, depends on MCP library):
-        # initialization_options = mcp._mcp_server.create_initialization_options()
-        # initialization_options["user"] = current_user # Add user info to options
-        # await mcp._mcp_server.run(read_stream, write_stream, initialization_options)
-
-        # For now, we'll run without explicitly passing user info to MCP,
-        # relying on the connection itself being authenticated.
-        await mcp._mcp_server.run(
-            read_stream,
-            write_stream,
-            mcp._mcp_server.create_initialization_options(),
-        )
+# Authenticated SSE endpoint removed: auth.py and authentication no longer exist
 
 
 # Import routes at the end to avoid circular imports

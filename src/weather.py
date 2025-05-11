@@ -2,7 +2,7 @@
 
 import logging
 from mcp.server.fastmcp import FastMCP
-from src.weather_support import make_nws_request, format_alert
+from weather_support import make_nws_request, format_alert
 
 
 # Configure logging for this module
