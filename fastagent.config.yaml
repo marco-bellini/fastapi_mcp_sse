@@ -43,6 +43,10 @@ mcp:
     weather:
       transport: "sse"
       url: "http://127.0.0.1:8000"  # Connect to root path where SSE transport is configured
+      #read_transport_sse_timeout_seconds: None
+      request_read_timeout_seconds: 30 
+      # https://github.com/lastmile-ai/mcp-agent/blob/8de63b41e877901ef71eb5b1125f31ce697d26f3/src/mcp_agent/mcp/mcp_agent_client_session.py#L92
+      
       headers:
         accept: "text/event-stream"
         cache-control: "no-cache"

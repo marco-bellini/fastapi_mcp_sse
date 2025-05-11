@@ -39,3 +39,4 @@ coverage.xml
 .uv/
 
 fastagent.secrets.yaml
+fastagent.jsonl
