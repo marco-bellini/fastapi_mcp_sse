@@ -1,6 +1,6 @@
 import uvicorn
 import os
-from app import app
+from weather_app import app
 import logging  # Import logging
 import argparse  # Import argparse for command-line arguments
 
