@@ -1,13 +1,12 @@
 import uvicorn
 import os
 from app import app
-import logging # Import logging
+import logging  # Import logging
+import argparse  # Import argparse for command-line arguments
 
 # Configure basic logging for the server
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
 
 # Environment variable configuration
 HOST = os.getenv("HOST", "0.0.0.0")
@@ -22,7 +21,23 @@ PORT = int(os.getenv("PORT", "8000"))
 
 def run():
     """Start the FastAPI server with uvicorn"""
-    uvicorn.run(app, host=HOST, port=PORT, log_level="info")
+    parser = argparse.ArgumentParser(
+        description="Run the FastAPI server with optional SSL configuration."
+    )
+    parser.add_argument("--ssl-keyfile", type=str, help="Path to the SSL key file.")
+    parser.add_argument(
+        "--ssl-certfile", type=str, help="Path to the SSL certificate file."
+    )
+    args = parser.parse_args()
+
+    uvicorn.run(
+        app,
+        host=HOST,
+        port=PORT,
+        log_level="info",
+        ssl_keyfile=args.ssl_keyfile,
+        ssl_certfile=args.ssl_certfile,
+    )
 
 
 if __name__ == "__main__":
