@@ -1,7 +1,14 @@
+
+import logging
 from fastapi import FastAPI, Request
 from mcp.server.sse import SseServerTransport
 from starlette.routing import Mount
 from weather import mcp
+
+
+# Configure logging for this module
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Create FastAPI application with metadata
 app = FastAPI(
@@ -28,6 +35,7 @@ def messages_docs():
     Note: This route is for documentation purposes only.
     The actual implementation is handled by the SSE transport.
     """
+    logger.debug("/messages documentation endpoint called.")
     pass  # This is just for documentation, the actual handler is mounted above
 
 
@@ -39,17 +47,21 @@ async def handle_sse(request: Request):
     This endpoint establishes a Server-Sent Events connection with the client
     and forwards communication to the Model Context Protocol server.
     """
-    # Use sse.connect_sse to establish an SSE connection with the MCP server
-    async with sse.connect_sse(request.scope, request.receive, request._send) as (
-        read_stream,
-        write_stream,
-    ):
-        # Run the MCP server with the established streams
-        await mcp._mcp_server.run(
+    logger.info("/sse endpoint called. Establishing SSE connection.")
+    try:
+        async with sse.connect_sse(request.scope, request.receive, request._send) as (
             read_stream,
             write_stream,
-            mcp._mcp_server.create_initialization_options(),
-        )
+        ):
+            logger.debug("SSE connection established. Running MCP server.")
+            await mcp._mcp_server.run(
+                read_stream,
+                write_stream,
+                mcp._mcp_server.create_initialization_options(),
+            )
+            logger.info("MCP server run completed for SSE connection.")
+    except Exception as e:
+        logger.exception(f"Exception in /sse endpoint: {e}")
 
 
 # Import routes at the end to avoid circular imports

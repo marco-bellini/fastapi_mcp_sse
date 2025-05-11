@@ -21,6 +21,7 @@ PORT = int(os.getenv("PORT", "8000"))
 
 def run():
     """Start the FastAPI server with uvicorn"""
+    logger.debug("Starting argument parser for SSL options.")
     parser = argparse.ArgumentParser(
         description="Run the FastAPI server with optional SSL configuration."
     )
@@ -30,15 +31,21 @@ def run():
     )
     args = parser.parse_args()
 
-    uvicorn.run(
-        app,
-        host=HOST,
-        port=PORT,
-        log_level="info",
-        ssl_keyfile=args.ssl_keyfile,
-        ssl_certfile=args.ssl_certfile,
-    )
+    logger.info(f"Launching FastAPI server on {HOST}:{PORT} (SSL: key={args.ssl_keyfile}, cert={args.ssl_certfile})")
+    try:
+        uvicorn.run(
+            app,
+            host=HOST,
+            port=PORT,
+            log_level="info",
+            ssl_keyfile=args.ssl_keyfile,
+            ssl_certfile=args.ssl_certfile,
+        )
+        logger.info("Uvicorn server started successfully.")
+    except Exception as e:
+        logger.exception(f"Failed to start Uvicorn server: {e}")
 
 
 if __name__ == "__main__":
+    logger.debug("__main__ entrypoint reached. Calling run().")
     run()
